@@ -32,6 +32,17 @@
             margin-bottom: 20px;
             font-size: 1.5em;
         }
+        .result {
+            text-align: center;
+            font-size: 2em;
+            margin-top: 20px;
+            display: none; /* Versteckt den Gewinntext standardmäßig */
+        }
+        .refresh-button {
+            display: none; /* Versteckt den Button standardmäßig */
+            margin-top: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -40,12 +51,31 @@
         <div class="image-container">
             {% for image in images %}
                 <div class="image-box">
-                    <a href="#" onclick="alert('Bild: {{ loop.index }}')">
+                    <a href="#" onclick="checkWin('{{ image }}', '{{ label }}')">
                         <img src="{{ image }}" alt="Bild {{ loop.index }}">
                     </a>
                 </div>
             {% endfor %}
         </div>
+        <div class="result" id="result">Gewonnen!</div>
+        <div class="refresh-button" id="refresh-button">
+            <button class="button is-primary" onclick="location.reload();">Erneut</button>
+        </div>
     </div>
+
+    <script>
+        function checkWin(selectedImage, label) {
+            const imageName = selectedImage.split('/').pop(); // Holt den Bildnamen
+            const imageBaseName = imageName.split('.')[0]; // Entfernt die Dateiendung
+
+            // Überprüft, ob der Bildname mit dem Label beginnt
+            if (imageBaseName.startsWith(label)) {
+                document.getElementById('result').style.display = 'block'; // Zeigt den Gewinntext an
+                document.getElementById('refresh-button').style.display = 'block'; // Zeigt den Button an
+            } else {
+                alert('Falsches Bild, versuche es erneut!'); // Fehlerbenachrichtigung für das falsche Bild
+            }
+        }
+    </script>
 </body>
 </html>
