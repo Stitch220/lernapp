@@ -27,7 +27,8 @@ def index():
     print("Objekte im ausgewählten Level-Ordner:", objects_in_selected_level)
 
     selected_images = []
-    
+    audio_files = {}  # Dictionary für Audio-Pfade
+
     # Zufälliges Bild aus dem ausgewählten Objekt auswählen
     if objects_in_selected_level:
         selected_object = random.choice(objects_in_selected_level)
@@ -41,6 +42,9 @@ def index():
         if images_in_selected_object:
             selected_image = random.choice(images_in_selected_object)
             selected_images.append(os.path.join(selected_object_path, selected_image))
+
+            # Pfad zur Audiodatei hinzufügen
+            audio_files[selected_image] = os.path.join(selected_object_path, selected_object + '.mp3')
 
     # Aus den restlichen Objekten Bilder auswählen
     remaining_objects = [obj for obj in objects_in_selected_level if obj != selected_object]
@@ -60,6 +64,9 @@ def index():
             selected_image = random.choice(images_in_object)
             selected_images.append(os.path.join(object_path, selected_image))
 
+            # Pfad zur Audiodatei hinzufügen
+            audio_files[selected_image] = os.path.join(object_path, obj + '.mp3')
+
     # Sicherstellen, dass genügend Bilder vorhanden sind (insgesamt 4)
     if len(selected_images) < 4:
         print("Gefundene Bilder:", selected_images)  # Debugging: Zeige gefundene Bilder an
@@ -68,7 +75,7 @@ def index():
     # Mischen der Bilder für zufällige Anordnung
     random.shuffle(selected_images)
 
-    return render_template('index.html', images=selected_images, label=selected_object)
+    return render_template('index.html', images=selected_images, label=selected_object, audio_files=audio_files)
 
 
 if __name__ == '__main__':

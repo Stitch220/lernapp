@@ -51,7 +51,7 @@
         <div class="image-container">
             {% for image in images %}
                 <div class="image-box">
-                    <a href="#" onclick="playAudio('{{ image }}', '{{ label }}')">
+                    <a href="#" onclick="playAudio('{{ image }}', '{{ label }}', '{{ audio_files[image.split('/')[-1]] }}')">
                         <img src="{{ image }}" alt="Bild {{ loop.index }}">
                     </a>
                 </div>
@@ -67,30 +67,27 @@
 
     <script>
         function extractBaseName(name) {
-            // Teilt den Namen bei "_" und "." und gibt den ersten Teil zurück
             return name.split(/[_\.]/)[0]; // RegEx für _ und .
         }
     
-        function playAudio(selectedImage, label) {
+        function playAudio(selectedImage, label, audioPath) {
             const imageName = selectedImage.split('/').pop(); // Holt den Bildnamen
             const imageBaseName = extractBaseName(imageName); // Holt den Basisnamen des Bildes
-            const folderName = selectedImage.split('/')[3]; // Holt den Namen des Level-Ordners
-            const objectName = selectedImage.split('/').slice(-2, -1)[0]; // Holt den Namen des Objekts
-        
+
             // Setzt den Pfad zur Audio-Datei
             const audio = document.getElementById('audio');
-            audio.src = `/static/img/${folderName}/${objectName}/${objectName}.mp3`; // Audio-Dateiname ist gleich dem Objektnamen
-        
+            audio.src = audioPath; // Verwende den übergebenen Audio-Pfad
+    
             console.log(`Audio Source: ${audio.src}`); // Ausgabe des Audio-Pfades zur Überprüfung
-        
+    
             // Audio abspielen
             audio.play().catch(error => {
                 console.error('Audio konnte nicht abgespielt werden:', error); // Fehlerausgabe
             });
-        
+    
             // Debugging-Ausgaben
             console.log(`Bildname: ${imageBaseName}, Label: ${label}`); // Überprüfung der Werte
-        
+    
             // Überprüfen, ob der Bildname dem Label entspricht
             if (imageBaseName.trim() === label.trim()) {
                 document.getElementById('result').innerText = 'Gewonnen!'; // Zeigt den Gewinntext an
@@ -101,12 +98,6 @@
                 document.getElementById('result').style.display = 'block'; // Macht den Text sichtbar
             }
         }
-        
     </script>
-    
-    
-    
-    
-    
 </body>
 </html>
