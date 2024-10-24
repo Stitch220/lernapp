@@ -43,11 +43,21 @@
             margin-top: 20px;
             text-align: center;
         }
+        .mmr-display {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="label">{{ label }}</div>
+        <div class="label">{{ label }}</div> <!-- Stelle sicher, dass 'label' übergeben wird -->
         <div class="image-container">
             {% for image in images %}
                 <div class="image-box">
@@ -63,50 +73,22 @@
         </div>
     </div>
 
+    <!-- MMR-Anzeige -->
+    <div class="mmr-display">
+        Aktuelles Ranking: {{ ranking }}<br>
+        Aktuelle MMR: {{ mmr }} <!-- Ändere {{ session['mmr'] }} zu {{ mmr }} -->
+    </div>
+
     <audio id="audio" controls style="display: none;"></audio>
 
     <script>
-        function extractBaseName(name) {
-            // Teilt den Namen bei "_" und "." und gibt den ersten Teil zurück
-            return name.split(/[_\.]/)[0]; // RegEx für _ und .
-        }
-    
-        function playAudio(selectedImage, label) {
-            const imageName = selectedImage.split('/').pop(); // Holt den Bildnamen
-            const imageBaseName = extractBaseName(imageName); // Holt den Basisnamen des Bildes
-            const folderName = selectedImage.split('/')[3]; // Holt den Namen des Level-Ordners
-            const objectName = selectedImage.split('/').slice(-2, -1)[0]; // Holt den Namen des Objekts
-        
-            // Setzt den Pfad zur Audio-Datei
+        function playAudio(image, label) {
+            // Implementiere die Logik zum Abspielen des Audios hier
             const audio = document.getElementById('audio');
-            audio.src = `/static/img/${folderName}/${objectName}/${objectName}.mp3`; // Audio-Dateiname ist gleich dem Objektnamen
-        
-            console.log(`Audio Source: ${audio.src}`); // Ausgabe des Audio-Pfades zur Überprüfung
-        
-            // Audio abspielen
-            audio.play().catch(error => {
-                console.error('Audio konnte nicht abgespielt werden:', error); // Fehlerausgabe
-            });
-        
-            // Debugging-Ausgaben
-            console.log(`Bildname: ${imageBaseName}, Label: ${label}`); // Überprüfung der Werte
-        
-            // Überprüfen, ob der Bildname dem Label entspricht
-            if (imageBaseName.trim() === label.trim()) {
-                document.getElementById('result').innerText = 'Gewonnen!'; // Zeigt den Gewinntext an
-                document.getElementById('result').style.display = 'block'; // Macht den Text sichtbar
-                document.getElementById('refresh-button').style.display = 'block'; // Zeigt den Button an
-            } else {
-                document.getElementById('result').innerText = 'Leider Falsch'; // Zeigt den Fehlertext an
-                document.getElementById('result').style.display = 'block'; // Macht den Text sichtbar
-            }
+            audio.src = image.replace('.png', '.mp3'); // Beispiel, um das Audio zu laden
+            audio.play();
         }
-        
     </script>
-    
-    
-    
-    
-    
 </body>
 </html>
+

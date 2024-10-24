@@ -1,66 +1,75 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template
 import os
 import random
 import re
 
 app = Flask(__name__)
 
-# Route für die Home-Seite mit dem Grid
 @app.route('/')
-def home():
-    return render_template('home.html')
-
-# Route für das Vokabel-Spiel
-@app.route('/vokabeln')
 def index():
-    # Pfad zum Ordner mit den Bildern
     image_folder = 'static/img'
     
-    # Alle Ordner im Bildordner auflisten
-    all_folders = [f for f in os.listdir(image_folder) if os.path.isdir(os.path.join(image_folder, f))]
+    # Alle Level-Ordner auflisten
+    level_folders = [f for f in os.listdir(image_folder) if os.path.isdir(os.path.join(image_folder, f))]
 
-    # Zufällig einen Ordner auswählen
-    selected_folder = random.choice(all_folders)
+    # Zufällig einen Level-Ordner auswählen
+    selected_level = random.choice(level_folders)
     
-    # Sicherstellen, dass das Label der ausgewählte Ordner ist
-    label = selected_folder
+    # Debugging: Zeige ausgewählten Level-Ordner an
+    print("Ausgewählter Level-Ordner:", selected_level)
+
+    selected_level_path = os.path.join(image_folder, selected_level)
+
+    # Alle Objekte im ausgewählten Level-Ordner auflisten
+    objects_in_selected_level = [f for f in os.listdir(selected_level_path) if os.path.isdir(os.path.join(selected_level_path, f))]
+    
+    # Debugging: Zeige alle Objekte im ausgewählten Level-Ordner an
+    print("Objekte im ausgewählten Level-Ordner:", objects_in_selected_level)
+
     selected_images = []
     
-    # Zufälliges Bild aus dem ausgewählten Ordner auswählen
-    images_in_selected_folder = [
-        f for f in os.listdir(os.path.join(image_folder, selected_folder))
-        if re.match(r'.*\.(jpg|jpeg|png|gif)$', f)  # Nur Bilder auswählen
-    ]
+    # Zufälliges Bild aus dem ausgewählten Objekt auswählen
+    if objects_in_selected_level:
+        selected_object = random.choice(objects_in_selected_level)
+        selected_object_path = os.path.join(selected_level_path, selected_object)
 
-    if images_in_selected_folder:
-        selected_image = random.choice(images_in_selected_folder)
-        selected_images.append(os.path.join(image_folder, selected_folder, selected_image))
+        images_in_selected_object = [
+            f for f in os.listdir(selected_object_path)
+            if re.match(r'.*\.(jpg|jpeg|png|gif)$', f)  # Nur Bilder auswählen
+        ]
 
-    # Aus den restlichen Ordnern Bilder auswählen
-    remaining_folders = [f for f in all_folders if f != selected_folder]
+        if images_in_selected_object:
+            selected_image = random.choice(images_in_selected_object)
+            selected_images.append(os.path.join(selected_object_path, selected_image))
+
+    # Aus den restlichen Objekten Bilder auswählen
+    remaining_objects = [obj for obj in objects_in_selected_level if obj != selected_object]
     
-    # Zufällige Auswahl von 3 weiteren Ordnern
-    selected_additional_folders = random.sample(remaining_folders, min(3, len(remaining_folders)))
+    # Zufällige Auswahl von 3 weiteren Objekten
+    selected_additional_objects = random.sample(remaining_objects, min(3, len(remaining_objects)))
     
-    # Bilder aus den zusätzlich ausgewählten Ordnern auswählen
-    for folder in selected_additional_folders:
-        images_in_folder = [
-            f for f in os.listdir(os.path.join(image_folder, folder))
+    for obj in selected_additional_objects:
+        object_path = os.path.join(selected_level_path, obj)
+
+        images_in_object = [
+            f for f in os.listdir(object_path)
             if re.match(r'.*\.(jpg|jpeg|png|gif)$', f)
         ]
 
-        if images_in_folder:
-            selected_image = random.choice(images_in_folder)
-            selected_images.append(os.path.join(image_folder, folder, selected_image))
+        if images_in_object:
+            selected_image = random.choice(images_in_object)
+            selected_images.append(os.path.join(object_path, selected_image))
 
     # Sicherstellen, dass genügend Bilder vorhanden sind (insgesamt 4)
     if len(selected_images) < 4:
+        print("Gefundene Bilder:", selected_images)  # Debugging: Zeige gefundene Bilder an
         return "Nicht genügend Bilder im Verzeichnis", 404  # Fehlerbehandlung
 
     # Mischen der Bilder für zufällige Anordnung
     random.shuffle(selected_images)
 
-    return render_template('index.html', images=selected_images, label=label)
+    return render_template('index.html', images=selected_images, label=selected_object)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

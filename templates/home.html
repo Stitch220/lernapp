@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <title>Home</title>
+    <style>
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            justify-items: center;
+            margin-top: 20px;
+        }
+        .button-box {
+            width: 100%;
+            text-align: center;
+        }
+        .button-box button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title has-text-centered">Willkommen</h1>
+        <div class="button-grid">
+            <div class="button-box">
+                <button class="button is-primary" onclick="window.location.href='/vokabeln'">Vokabeln</button>
+            </div>
+            <!-- Weitere Buttons können hier hinzugefügt werden -->
+            <div class="button-box">
+                <button class="button is-link">Andere Funktion</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
