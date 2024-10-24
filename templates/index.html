@@ -66,30 +66,45 @@
     <audio id="audio" controls style="display: none;"></audio>
 
     <script>
+        function extractBaseName(name) {
+            // Teilt den Namen bei "_" und "." und gibt den ersten Teil zurück
+            return name.split(/[_\.]/)[0]; // RegEx für _ und .
+        }
+    
         function playAudio(selectedImage, label) {
             const imageName = selectedImage.split('/').pop(); // Holt den Bildnamen
-            const imageBaseName = imageName.split('.')[0]; // Entfernt die Dateiendung
-            const folderName = selectedImage.split('/').slice(3, 4)[0].split('.')[0];
-
-            // Setzt den Pfad zur Audio-Datei, basierend auf dem Ordnernamen ohne Dateiendung
+            const imageBaseName = extractBaseName(imageName); // Holt den Basisnamen des Bildes
+            const folderName = extractBaseName(selectedImage.split('/').slice(3, 4)[0]); // Holt den Basisnamen des Ordners
+    
+            // Setzt den Pfad zur Audio-Datei
             const audio = document.getElementById('audio');
             audio.src = `/static/img/${folderName}/${folderName}.mp3`; // Audio-Dateiname ist gleich dem Ordnernamen
-
+    
             console.log(`Audio Source: ${audio.src}`); // Ausgabe des Audio-Pfades zur Überprüfung
-
+    
             // Audio abspielen
             audio.play().catch(error => {
-                console.error('Audio konnte nicht abgespielt werden:', error); // Fehlerausgabe, wenn das Abspielen fehlschlägt
+                console.error('Audio konnte nicht abgespielt werden:', error); // Fehlerausgabe
             });
-
-            // Überprüfen, ob das Bild dem Label entspricht (optional)
-            if (imageBaseName.startsWith(label)) {
-                document.getElementById('result').style.display = 'block'; // Zeigt den Gewinntext an
+    
+            // Debugging-Ausgaben
+            console.log(`Bildname: ${imageBaseName}, Label: ${label}`); // Überprüfung der Werte
+    
+            // Überprüfen, ob der Bildname dem Label entspricht
+            if (imageBaseName.trim() === label.trim()) {
+                document.getElementById('result').innerText = 'Gewonnen!'; // Zeigt den Gewinntext an
+                document.getElementById('result').style.display = 'block'; // Macht den Text sichtbar
                 document.getElementById('refresh-button').style.display = 'block'; // Zeigt den Button an
             } else {
-                alert('Falsches Bild, versuche es erneut!'); // Fehlerbenachrichtigung für das falsche Bild
+                document.getElementById('result').innerText = 'Leider Falsch'; // Zeigt den Fehlertext an
+                document.getElementById('result').style.display = 'block'; // Macht den Text sichtbar
             }
         }
     </script>
+    
+    
+    
+    
+    
 </body>
 </html>
