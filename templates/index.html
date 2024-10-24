@@ -51,7 +51,7 @@
         <div class="image-container">
             {% for image in images %}
                 <div class="image-box">
-                    <a href="#" onclick="checkWin('{{ image }}', '{{ label }}')">
+                    <a href="#" onclick="playAudio('{{ image }}', '{{ label }}')">
                         <img src="{{ image }}" alt="Bild {{ loop.index }}">
                     </a>
                 </div>
@@ -63,12 +63,26 @@
         </div>
     </div>
 
+    <audio id="audio" controls style="display: none;"></audio>
+
     <script>
-        function checkWin(selectedImage, label) {
+        function playAudio(selectedImage, label) {
             const imageName = selectedImage.split('/').pop(); // Holt den Bildnamen
             const imageBaseName = imageName.split('.')[0]; // Entfernt die Dateiendung
+            const folderName = selectedImage.split('/').slice(3, 4)[0].split('.')[0];
 
-            // Überprüft, ob der Bildname mit dem Label beginnt
+            // Setzt den Pfad zur Audio-Datei, basierend auf dem Ordnernamen ohne Dateiendung
+            const audio = document.getElementById('audio');
+            audio.src = `/static/img/${folderName}/${folderName}.mp3`; // Audio-Dateiname ist gleich dem Ordnernamen
+
+            console.log(`Audio Source: ${audio.src}`); // Ausgabe des Audio-Pfades zur Überprüfung
+
+            // Audio abspielen
+            audio.play().catch(error => {
+                console.error('Audio konnte nicht abgespielt werden:', error); // Fehlerausgabe, wenn das Abspielen fehlschlägt
+            });
+
+            // Überprüfen, ob das Bild dem Label entspricht (optional)
             if (imageBaseName.startsWith(label)) {
                 document.getElementById('result').style.display = 'block'; // Zeigt den Gewinntext an
                 document.getElementById('refresh-button').style.display = 'block'; // Zeigt den Button an

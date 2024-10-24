@@ -54,7 +54,8 @@ def index():
     # Mischen der Bilder für zufällige Anordnung
     random.shuffle(selected_images)
 
-    return render_template('index.html', images=selected_images, label=label)
+    return render_template('index.html', images=selected_images, label=label, selected_folder=selected_folder)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
