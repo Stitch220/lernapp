@@ -1,11 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 import os
 import random
 import re
 
 app = Flask(__name__)
 
+# Route für die Home-Seite mit dem Grid
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+# Route für das Vokabel-Spiel
+@app.route('/vokabeln')
 def index():
     # Pfad zum Ordner mit den Bildern
     image_folder = 'static/img'
